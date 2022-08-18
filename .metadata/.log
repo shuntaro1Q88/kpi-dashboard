@@ -253,3 +253,15 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-18 10:34:31.766
 !MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/drops/release/1.2.2/content.xml.xz, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 22:51:26.841
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.qWPFXaOY
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 22:51:26.842
+!MESSAGE unsubscribing from classpath changes: sts4.classpath.qWPFXaOY
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 22:51:26.842
+!MESSAGE subsribers = {}
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 22:51:26.843
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.qWPFXaOY => OK
