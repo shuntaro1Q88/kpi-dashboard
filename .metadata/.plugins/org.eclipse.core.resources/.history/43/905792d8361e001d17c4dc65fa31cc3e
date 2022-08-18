@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 横スクロールありグラフの設定 -->
+  <style>
+    /* 配置の基準となるラッパーブロック; とりあえず背景色もここで設定している */
+    .scrollableChartWrapper {
+      position: relative;
+      /* background-color: ghostwhite; */
+    }
+    /* スクロール可能グラフを囲む div */
+    .scrollableChartWrapper > div {
+      position: relative;
+      overflow-x: scroll;
+    }
+    /* Y軸イメージコピー用 canvas */
+    .scrollableChartWrapper > canvas {
+      position: absolute;            /* これにより、上の div と重なる位置に canvas が配置される */
+      left: 0;
+      top: 0;
+      background-color: ghostwhite;  /* ここをコメントアウトすると、背景色が透明になるので、Y軸を透かしてグラフ部分が見えるようになる */
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/chart-template.css}">
+  <script type="text/javascript" th:src="@{/js/chartjs-plugin-total-labels-except-line.js}"></script>
+  <title>受注実績</title>
+
+</head>
+
+<body>
+  <div class="container">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark py-0">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav2" aria-controls="navbarNav2" aria-expanded="false" aria-label="ナビゲーション切替">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav2">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">TOP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">引合</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/order}">受注</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">受注残・充足</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">売上</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">製造利益</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">その他</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container-fluid">
+    <h4>受注実績 (単位:百万円)</h4>
+
+    <h4>活動系別</h4>
+    <hr class="my-0">
+   
+    <div class="row">
+      <!-- 月次累積 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1">
+          <h5>月次累積</h5>
+          <div class="card-body p-0">
+            <canvas id="chart1" width="320" height="350">
+              Canvas not supported...
+  					</canvas>
+            <script>
+            (function() {
+              'use strict';
+              let monthlyAccumulation4YrBefore = {
+                label: 'FY18',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[1][1]}]]'),Number('[[${monthlyAccumulationOrder[2][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[3][1]}]]'),Number('[[${monthlyAccumulationOrder[4][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[5][1]}]]'),Number('[[${monthlyAccumulationOrder[6][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[7][1]}]]'),Number('[[${monthlyAccumulationOrder[8][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[9][1]}]]'),Number('[[${monthlyAccumulationOrder[10][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[11][1]}]]'),Number('[[${monthlyAccumulationOrder[12][1]}]]'),
+                ],
+                borderColor: '#aeaeae',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulation3YrBefore = {
+                label: 'FY19',
+                data: [],
+                borderColor: '#ff8c00',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulation2YrBefore = {
+                label: 'FY20',
+                data: [],
+                borderColor: '#52ac97',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulationLastYr = {
+                label: 'FY21',
+                data: [],
+                borderColor: '#ac6258',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulationThisTerm = {
+                label: 'FY22',
+                data: [],
+                borderColor: '#2a4f64',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let type = 'line';
+              let data = {
+                labels: ['4月', '5月', '6月', '7月', '8月', '9月','10月', '11月', '12月', '1月', '2月', '3月'],
+                datasets: [
+                  monthlyAccumulationThisTerm,
+                  monthlyAccumulationLastYr,
+                  monthlyAccumulation2YrBefore,
+                  monthlyAccumulation3YrBefore,
+                  monthlyAccumulation4YrBefore,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: false,
+                plugins : {
+                  datalabels: {
+                    display: false,
+                  },
+                },
+                legend: {
+                  labels: {
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  }
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : false,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : false,
+                    ticks : {
+                      fontColor: '#000000',
+                      suggestedMin : 0,
+                      suggestedMax : 6000,
+                      stepSize : 1000,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ''; //ここに単位を入力
+                      }
+                    }
+                  } ]
+                },
+              };
+             let ctx_line = document.getElementById('chart1').getContext('2d');
+             let myChart = new Chart(ctx_line, {
+               options : options,
+               type : type,
+               data : data,
+               });
+            })();
+            </script>
+          </div>
+        </div>
+      </div>
+      <!-- カテゴリ別・月次実績 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1" >
+          <h5>カテゴリ別・月次実績</h5>
+          <div class="card-body p-0">
+            <canvas id="chart2" width="320" height="350"></canvas>
+            <script>
+              (function() {
+              'use strict';
+              
+              let repair = {
+                label: '修理',
+                data: [],
+                backgroundColor: 'steelblue',
+                borderWidth: 0,
+                datalabels: {
+                  display: false,
+                },
+              };
+              let parts = {
+                label: 'パーツ',
+                data: [],
+                backgroundColor: 'darkseagreen',
+                borderWidth: 0,
+              };
+              let kaizo = {
+                label: '改造',
+                data: [],
+                backgroundColor: 'burlywood',
+                borderWidth: 0,
+              };
+
+              let type = 'bar';
+              let data = {
+                labels: ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'],
+                datasets: [
+                  repair,
+                  parts,
+                  kaizo,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: true,
+                plugins : {
+                  datalabels: {
+                    display:'auto',
+                    color: 'white',
+                    font: {
+                      size: 10,
+                    },
+                    anchor: 'center',
+                    align: 'center',
+                    formatter: function (value, context) {
+                      var valueLabel = ''; // 表示するラベルの文字列
+                      if(value >= 100){
+                        valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                      }
+                      return valueLabel;
+                    },
+                  },
+                },
+                legend: {
+                  labels:{
+                    filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  },
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true,
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontSize: 12,
+                      fontColor: '#000000',
+                      suggestedMin : 0,
+                      suggestedMax : 1750,
+                      stepSize : 250,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    } ]
+                  },
+                };
+                let ctx = document.getElementById('chart2').getContext('2d');
+                let myChart = new Chart(ctx, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+      <!-- 活動系別・年次実績 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1">
+          <h5>活動系別・年次実績</h5>
+          <div class="card-body p-0">
+            <canvas id="chart3" width="320" height="350"></canvas>
+            <script>
+              (function() {
+              'use strict';
+              
+              let repair = {
+                label: '修理',
+                data: [],
+                backgroundColor: 'steelblue',
+                borderWidth: 0,
+                datalabels: {
+                  display: false,
+                },
+              };
+              let parts = {
+                label: 'パーツ',
+                data: [],
+                backgroundColor: 'darkseagreen',
+                borderWidth: 0,
+              };
+              let oh = {
+                label: 'OH',
+                data: [],
+                backgroundColor: 'rosybrown',
+                borderWidth: 0,
+              };
+              let kaizo = {
+                label: '改造',
+                data: [],
+                backgroundColor: 'burlywood',
+                borderWidth: 0,
+              };
+
+              let type = 'bar';
+              let data = {
+                labels: [],
+                datasets: [
+                  repair,
+                  parts,
+                  kaizo,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: true,
+                plugins : {
+                  datalabels: {
+                    display:'auto',
+                    color: 'white',
+                    font: {
+                      size: 10,
+                    },
+                    anchor: 'center',
+                    align: 'center',
+                    formatter: function (value, context) {
+                      var valueLabel = ''; // 表示するラベルの文字列
+                      if(value >= 500){
+                        valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                      }
+                      return valueLabel;
+                    },
+                  },
+                },
+                legend: {
+                  labels:{
+                    filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  },
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true,
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontSize: 12,
+                      fontColor: '#000000',
+                      min : 0,
+                      suggestedMax : 2000,
+                      stepSize : 2000,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    } ]
+                  },
+                };
+                let ctx = document.getElementById('chart3').getContext('2d');
+                let myChart = new Chart(ctx, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 活動系別・月次実績 -->
+    <div class="row">
+      <div class="col-xl-12 p-1">
+        <div class="card border-0 rounded-3 m-1" >
+          <h5>活動系別・月次実績</h5>
+          <div class="card-body p-0">
+            <!-- 以下 HTML 部分 -->
+            <!-- スクロール可能グラフ領域のラッパーブロック -->
+            <div class="scrollableChartWrapper">
+              <!-- スクロールされる canvas を持つ div:
+                   - style.width を省略すると div の幅がページ幅に合わせられる;
+                   - style.width を指定すると div の幅（≒スクロールバーの長さ）が固定される -->
+              <div>
+                <!-- グラフ描画用 canvas:
+                     - style.height は必須;
+                     - style.width は全データを表示するのに必要なグラフ幅であり、JS によって設定する;
+                     - width,height は Chart により設定される -->
+                <canvas id="chart4" style="height: 350px;"></canvas>
+              </div>
+              <!-- Y軸イメージコピー用 canvas: {style.,}{height,width} は JS によって設定する -->
+              <canvas id="yAxis" width="0"></canvas>
+            </div>
+
+            <!-- 以下 JavaScript 部分 -->
+            <script>
+              (function() {
+
+                // Y軸コピー用 canvas
+                var cvsYAxis = document.getElementById('yAxis');
+                var ctxYAxis = cvsYAxis.getContext('2d');
+
+                let repair = {
+                  label: '修理',
+                  data: [],
+                  backgroundColor: 'steelblue',
+                  borderWidth: 0,
+                  datalabels: {
+                    display: false,
+                  },
+                  yAxisID: 'y-axis-1',
+                };
+                let parts = {
+                  label: 'パーツ',
+                  data: [],
+                  backgroundColor: 'darkseagreen',
+                  borderWidth: 0,
+                  yAxisID: 'y-axis-1',
+                };
+
+                let kaizo = {
+                  label: '改造',
+                  data: [],
+                  backgroundColor: 'burlywood',
+                  borderWidth: 0,
+                  yAxisID: 'y-axis-1',
+                };
+
+                let type = 'bar';
+                let data = {
+                  labels: [],
+                  datasets: [
+                    repair,
+                    parts,
+                    kaizo,
+                  ]
+                };
+                let options = {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  sumLabels: true,
+                  plugins : {
+                    datalabels: {
+                      display:'auto',
+                      color: 'white',
+                      font: {
+                        size: 10,
+                      },
+                      anchor: 'center',
+                      align: 'center',
+                      formatter: function (value, context) {
+                        var valueLabel = ''; // 表示するラベルの文字列
+                        if(value >= 100){
+                          valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                        }
+                        return valueLabel;
+                      },
+                    },
+                  },
+                  legend: {
+                    position: 'top',
+                    align: 'start',
+                    labels:{
+                      filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                      boxWidth: 10,
+                      fontColor: '#000000',
+                    },
+                  },
+                  scales : {
+                    xAxes : [ {
+                      gridLines: {                   // 補助線
+                        color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                        zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                      },
+                      stacked : true,
+                      ticks : {
+                        fontColor: '#000000', 
+                        autoSkip: true,
+                      }
+                    } ],
+                    yAxes : [ {
+                      id: 'y-axis-1',
+                      position: 'left',
+                      gridLines: {                   // 補助線
+                        color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                        zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                      },
+                      stacked : true,
+                      ticks : {
+                        fontSize: 12,
+                        fontColor: '#000000',
+                        min : 0,
+                        suggestedMax : 250,
+                        stepSize : 250,
+                        callback : function(label, index, labels) {
+                          return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    },]
+                  },
+                };
+
+                // X軸の1データ当たりの幅
+                var xAxisStepSize= 18;
+                // グラフ全体の幅を計算
+                var chartWidth = 120 * xAxisStepSize;
+
+                // グラフ描画用 canvas
+                var cvsChart = document.getElementById('chart4');
+                var ctxChart = cvsChart.getContext('2d');
+
+                // グラフ描画用canvasのstyle.width(すなわち全データを描画するのに必要なサイズ)に上記の幅を設定
+                cvsChart.style.width = chartWidth + "px";
+
+                // canvas.width(height)はグラフ描画時に Chart により変更される(らしい)ので、下記は不要
+                //cvsChart.width = chartWidth;
+                //cvsChart.height = chartHeight;
+
+                console.log("Before chart canvas width=" + cvsChart.style.width);
+                console.log("Before chart canvas height=" + cvsChart.style.height);
+
+                // グラフ描画
+                var myChart = new Chart(ctxChart, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+  
+</body>
+</html>

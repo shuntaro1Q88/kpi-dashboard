@@ -1,0 +1,15 @@
+package com.shunproduct.kpidashboard.controller;
+
+import org.springframework.stereotype.Controller;
+
+import com.shunproduct.kpidashboard.service.CSVTo2DArrayService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Controller
+public class ChartController {
+	
+	private final CSVTo2DArrayService csvTo2DArray;
+
+}

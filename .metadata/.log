@@ -1,0 +1,255 @@
+!SESSION 2022-08-17 16:35:11.994 -----------------------------------------------
+eclipse.buildId=4.14.0.202203131612
+java.version=17.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ja_JP
+Framework arguments:  -product org.springframework.boot.ide.branding.sts4
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.sts4
+
+!ENTRY org.eclipse.egit.ui 2 0 2022-08-17 16:35:40.776
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\mtkws'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.ui 2 2 2022-08-17 16:39:14.961
+!MESSAGE Invalid property category path: org.springframework.ide.eclipse.beans.ui.properties.ProjectPropertyPage (bundle: org.springframework.ide.eclipse.xml.namespaces, propertyPage: org.springframework.ide.eclipse.beans.ui.namespaces.projectPropertyPage)
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:54.702
+!MESSAGE Entering DelegatingStreamConnectionProvider()
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:54.703
+!MESSAGE DelegatingStreamConnectionProvider classloader = org.eclipse.osgi.internal.loader.EquinoxClassLoader@139f48a4[org.springframework.tooling.boot.ls:1.32.0.202203131529(id=619)]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:54.709
+!MESSAGE SpringBootLanguageServer exists!
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:54.791
+!MESSAGE Instantiating ReusableClasspathListenerHandler
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.736
+!MESSAGE 起動から初期化までの Boot LS 起動時間: 3020ms
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.804
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.UunQWirsisBatched = true
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.806
+!MESSAGE Setting up ClasspathListenerManager
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.807
+!MESSAGE Scheduling initial event for all projects ...
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.807
+!MESSAGE Scheduling initial event for all projects DONE
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.808
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.UunQWirs => OK
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.808
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.812
+!MESSAGE classpath=74 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.814
+!MESSAGE buffering callback sts4.classpath.UunQWirs kpi-dashboard false 74
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:57.814
+!MESSAGE executing callback sts4.classpath.UunQWirs 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 16:41:58.060
+!MESSAGE executing callback sts4.classpath.UunQWirs SUCCESS [done]
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-17 17:30:18.694
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/updates/release/latest, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-17 17:30:21.122
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/drops/release/1.2.2/content.xml.xz, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:27.472
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:27.475
+!MESSAGE classpath=81 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:27.476
+!MESSAGE buffering callback sts4.classpath.UunQWirs kpi-dashboard false 81
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:27.477
+!MESSAGE executing callback sts4.classpath.UunQWirs 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:27.489
+!MESSAGE executing callback sts4.classpath.UunQWirs SUCCESS [done]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:28.656
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:28.659
+!MESSAGE classpath=81 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:28.661
+!MESSAGE buffering callback sts4.classpath.UunQWirs kpi-dashboard false 81
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:28.661
+!MESSAGE executing callback sts4.classpath.UunQWirs 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 20:44:28.672
+!MESSAGE executing callback sts4.classpath.UunQWirs SUCCESS [done]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:27:21.083
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.UunQWirs
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:27:21.084
+!MESSAGE unsubscribing from classpath changes: sts4.classpath.UunQWirs
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:27:21.084
+!MESSAGE subsribers = {}
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:27:21.084
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.UunQWirs => OK
+!SESSION 2022-08-17 22:27:24.285 -----------------------------------------------
+eclipse.buildId=4.14.0.202203131612
+java.version=17.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ja_JP
+Framework arguments:  -product org.springframework.boot.ide.branding.sts4
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.sts4
+
+!ENTRY org.eclipse.egit.ui 2 0 2022-08-17 22:27:34.999
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\mtkws'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-17 22:36:03.860
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/updates/release/latest, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-17 22:36:06.295
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/drops/release/1.2.2/content.xml.xz, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:30.096
+!MESSAGE Entering DelegatingStreamConnectionProvider()
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:30.097
+!MESSAGE DelegatingStreamConnectionProvider classloader = org.eclipse.osgi.internal.loader.EquinoxClassLoader@21d75839[org.springframework.tooling.boot.ls:1.32.0.202203131529(id=619)]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:30.102
+!MESSAGE SpringBootLanguageServer exists!
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:30.176
+!MESSAGE Instantiating ReusableClasspathListenerHandler
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.890
+!MESSAGE 起動から初期化までの Boot LS 起動時間: 2785ms
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.948
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.kkFHiGwLisBatched = true
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.949
+!MESSAGE Setting up ClasspathListenerManager
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.950
+!MESSAGE Scheduling initial event for all projects ...
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.951
+!MESSAGE Scheduling initial event for all projects DONE
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.951
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.kkFHiGwL => OK
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.951
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.955
+!MESSAGE classpath=81 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.957
+!MESSAGE buffering callback sts4.classpath.kkFHiGwL kpi-dashboard false 81
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:32.958
+!MESSAGE executing callback sts4.classpath.kkFHiGwL 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 22:47:33.165
+!MESSAGE executing callback sts4.classpath.kkFHiGwL SUCCESS [done]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 23:48:53.005
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.kkFHiGwL
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 23:48:53.006
+!MESSAGE unsubscribing from classpath changes: sts4.classpath.kkFHiGwL
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 23:48:53.006
+!MESSAGE subsribers = {}
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-17 23:48:53.006
+!MESSAGE ClasspathListenerHandler removeClasspathListener sts4.classpath.kkFHiGwL => OK
+
+!ENTRY org.eclipse.ui 2 2 2022-08-17 23:48:53.653
+!MESSAGE Invalid property category path: org.springframework.ide.eclipse.beans.ui.properties.ProjectPropertyPage (bundle: org.springframework.ide.eclipse.xml.namespaces, propertyPage: org.springframework.ide.eclipse.beans.ui.namespaces.projectPropertyPage)
+!SESSION 2022-08-18 09:47:18.460 -----------------------------------------------
+eclipse.buildId=4.14.0.202203131612
+java.version=17.0.2
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ja_JP
+Framework arguments:  -product org.springframework.boot.ide.branding.sts4
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.springframework.boot.ide.branding.sts4
+
+!ENTRY org.eclipse.egit.ui 2 0 2022-08-18 09:47:29.161
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\mtkws'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:47.547
+!MESSAGE Entering DelegatingStreamConnectionProvider()
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:47.547
+!MESSAGE DelegatingStreamConnectionProvider classloader = org.eclipse.osgi.internal.loader.EquinoxClassLoader@5bd9b2d6[org.springframework.tooling.boot.ls:1.32.0.202203131529(id=619)]
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:47.563
+!MESSAGE SpringBootLanguageServer exists!
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:47.675
+!MESSAGE Instantiating ReusableClasspathListenerHandler
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.683
+!MESSAGE 起動から初期化までの Boot LS 起動時間: 3108ms
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.745
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.qWPFXaOYisBatched = true
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.747
+!MESSAGE Setting up ClasspathListenerManager
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.748
+!MESSAGE Scheduling initial event for all projects ...
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.748
+!MESSAGE Scheduling initial event for all projects DONE
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.749
+!MESSAGE exists = true open = true => deleted = false
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.749
+!MESSAGE ClasspathListenerHandler addClasspathListener sts4.classpath.qWPFXaOY => OK
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.753
+!MESSAGE classpath=81 entries
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.755
+!MESSAGE buffering callback sts4.classpath.qWPFXaOY kpi-dashboard false 81
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:50.756
+!MESSAGE executing callback sts4.classpath.qWPFXaOY 1 batched events
+
+!ENTRY org.springframework.tooling.ls.eclipse.commons 1 0 2022-08-18 10:03:51.496
+!MESSAGE executing callback sts4.classpath.qWPFXaOY SUCCESS [done]
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-18 10:34:29.390
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/updates/release/latest, see CVE-2021-41033. Consider using https instead.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2022-08-18 10:34:31.766
+!MESSAGE Using unsafe http transport to retrieve http://download.eclipse.org/usssdk/drops/release/1.2.2/content.xml.xz, see CVE-2021-41033. Consider using https instead.

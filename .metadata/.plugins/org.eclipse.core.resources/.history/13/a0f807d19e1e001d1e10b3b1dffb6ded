@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- 横スクロールありグラフの設定 -->
+  <style>
+    /* 配置の基準となるラッパーブロック; とりあえず背景色もここで設定している */
+    .scrollableChartWrapper {
+      position: relative;
+      /* background-color: ghostwhite; */
+    }
+    /* スクロール可能グラフを囲む div */
+    .scrollableChartWrapper > div {
+      position: relative;
+      overflow-x: scroll;
+    }
+    /* Y軸イメージコピー用 canvas */
+    .scrollableChartWrapper > canvas {
+      position: absolute;            /* これにより、上の div と重なる位置に canvas が配置される */
+      left: 0;
+      top: 0;
+      background-color: ghostwhite;  /* ここをコメントアウトすると、背景色が透明になるので、Y軸を透かしてグラフ部分が見えるようになる */
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/chart-template.css}">
+  <script type="text/javascript" th:src="@{/js/chartjs-plugin-total-labels-except-line.js}"></script>
+  <title>受注実績</title>
+</head>
+
+<body>
+  <div class="container">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark py-0">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav2" aria-controls="navbarNav2" aria-expanded="false" aria-label="ナビゲーション切替">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav2">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">TOP</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">引合</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/order}">受注</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">受注残・充足</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">売上</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{#}">製造利益</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">その他</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+              <a class="dropdown-item p-1" th:href="@{#}">###</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container-fluid">
+    <h4>受注実績 (単位:百万円)</h4>
+
+    <hr class="my-0">
+   
+    <div class="row">
+      <!-- 年度別・月次累積 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1">
+          <h5>年度別・月次累積</h5>
+          <div class="card-body p-0">
+            <canvas id="chart1" width="320" height="350">
+              Canvas not supported...
+  					</canvas>
+            <script>
+            (function() {
+              'use strict';
+              let monthlyAccumulation4YrBefore = {
+                label: 'FY18',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[1][1]}]]'),Number('[[${monthlyAccumulationOrder[2][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[3][1]}]]'),Number('[[${monthlyAccumulationOrder[4][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[5][1]}]]'),Number('[[${monthlyAccumulationOrder[6][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[7][1]}]]'),Number('[[${monthlyAccumulationOrder[8][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[9][1]}]]'),Number('[[${monthlyAccumulationOrder[10][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[11][1]}]]'),Number('[[${monthlyAccumulationOrder[12][1]}]]'),
+                ],
+                borderColor: '#aeaeae',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulation3YrBefore = {
+                label: 'FY19',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[13][1]}]]'),Number('[[${monthlyAccumulationOrder[14][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[15][1]}]]'),Number('[[${monthlyAccumulationOrder[16][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[17][1]}]]'),Number('[[${monthlyAccumulationOrder[18][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[19][1]}]]'),Number('[[${monthlyAccumulationOrder[20][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[21][1]}]]'),Number('[[${monthlyAccumulationOrder[22][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[23][1]}]]'),Number('[[${monthlyAccumulationOrder[24][1]}]]'),
+                ],
+                borderColor: '#ff8c00',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulation2YrBefore = {
+                label: 'FY20',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[25][1]}]]'),Number('[[${monthlyAccumulationOrder[26][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[27][1]}]]'),Number('[[${monthlyAccumulationOrder[28][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[29][1]}]]'),Number('[[${monthlyAccumulationOrder[30][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[31][1]}]]'),Number('[[${monthlyAccumulationOrder[32][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[33][1]}]]'),Number('[[${monthlyAccumulationOrder[34][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[35][1]}]]'),Number('[[${monthlyAccumulationOrder[36][1]}]]'),
+                ],
+                borderColor: '#52ac97',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulationLastYr = {
+                label: 'FY21',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[37][1]}]]'),Number('[[${monthlyAccumulationOrder[38][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[39][1]}]]'),Number('[[${monthlyAccumulationOrder[40][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[41][1]}]]'),Number('[[${monthlyAccumulationOrder[42][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[43][1]}]]'),Number('[[${monthlyAccumulationOrder[44][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[45][1]}]]'),Number('[[${monthlyAccumulationOrder[46][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[47][1]}]]'),Number('[[${monthlyAccumulationOrder[48][1]}]]'),
+                ],
+                borderColor: '#ac6258',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let monthlyAccumulationThisTerm = {
+                label: 'FY22',
+                data: [
+                  Number('[[${monthlyAccumulationOrder[49][1]}]]'),Number('[[${monthlyAccumulationOrder[50][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[51][1]}]]'),Number('[[${monthlyAccumulationOrder[52][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[53][1]}]]'),Number('[[${monthlyAccumulationOrder[54][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[55][1]}]]'),Number('[[${monthlyAccumulationOrder[56][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[57][1]}]]'),Number('[[${monthlyAccumulationOrder[58][1]}]]'),
+                  Number('[[${monthlyAccumulationOrder[59][1]}]]'),Number('[[${monthlyAccumulationOrder[60][1]}]]'),
+                ],
+                borderColor: '#2a4f64',
+                borderWidth: 3,
+                fill: false,
+                lineTension: 0,
+              };
+              let type = 'line';
+              let data = {
+                labels: ['4月', '5月', '6月', '7月', '8月', '9月','10月', '11月', '12月', '1月', '2月', '3月'],
+                datasets: [
+                  monthlyAccumulationThisTerm,
+                  monthlyAccumulationLastYr,
+                  monthlyAccumulation2YrBefore,
+                  monthlyAccumulation3YrBefore,
+                  monthlyAccumulation4YrBefore,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: false,
+                plugins : {
+                  datalabels: {
+                    display: false,
+                  },
+                },
+                legend: {
+                  labels: {
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  }
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : false,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : false,
+                    ticks : {
+                      fontColor: '#000000',
+                      suggestedMin : 0,
+                      suggestedMax : 6000,
+                      stepSize : 2000,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ''; //ここに単位を入力
+                      }
+                    }
+                  } ]
+                },
+              };
+             let ctx_line = document.getElementById('chart1').getContext('2d');
+             let myChart = new Chart(ctx_line, {
+               options : options,
+               type : type,
+               data : data,
+               });
+            })();
+            </script>
+          </div>
+        </div>
+      </div>
+      <!-- カテゴリ別・月次実績 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1" >
+          <h5>カテゴリ別・月次実績</h5>
+          <div class="card-body p-0">
+            <canvas id="chart2" width="320" height="350"></canvas>
+            <script>
+              (function() {
+              'use strict';
+              
+              let repair = {
+                label: '修理',
+                data: [
+                  Number('[[${monthlyRecordOrder[49][1]}]]'),Number('[[${monthlyRecordOrder[50][1]}]]'),
+                  Number('[[${monthlyRecordOrder[51][1]}]]'),Number('[[${monthlyRecordOrder[52][1]}]]'),
+                  Number('[[${monthlyRecordOrder[53][1]}]]'),Number('[[${monthlyRecordOrder[54][1]}]]'),
+                  Number('[[${monthlyRecordOrder[55][1]}]]'),Number('[[${monthlyRecordOrder[56][1]}]]'),
+                  Number('[[${monthlyRecordOrder[57][1]}]]'),Number('[[${monthlyRecordOrder[58][1]}]]'),
+                  Number('[[${monthlyRecordOrder[59][1]}]]'),Number('[[${monthlyRecordOrder[60][1]}]]'),
+                ],
+                backgroundColor: '#4682b4',
+                borderWidth: 0,
+              };
+              let parts = {
+                label: 'パーツ販売',
+                data: [
+                  Number('[[${monthlyRecordOrder[49][2]}]]'),Number('[[${monthlyRecordOrder[50][2]}]]'),
+                  Number('[[${monthlyRecordOrder[51][2]}]]'),Number('[[${monthlyRecordOrder[52][2]}]]'),
+                  Number('[[${monthlyRecordOrder[53][2]}]]'),Number('[[${monthlyRecordOrder[54][2]}]]'),
+                  Number('[[${monthlyRecordOrder[55][2]}]]'),Number('[[${monthlyRecordOrder[56][2]}]]'),
+                  Number('[[${monthlyRecordOrder[57][2]}]]'),Number('[[${monthlyRecordOrder[58][2]}]]'),
+                  Number('[[${monthlyRecordOrder[59][2]}]]'),Number('[[${monthlyRecordOrder[60][2]}]]'),
+                ],
+                backgroundColor: '#71bd71',
+                borderWidth: 0,
+              };
+              let kaizo = {
+                label: '設備改造',
+                data: [
+                  Number('[[${monthlyRecordOrder[49][3]}]]'),Number('[[${monthlyRecordOrder[50][3]}]]'),
+                  Number('[[${monthlyRecordOrder[51][3]}]]'),Number('[[${monthlyRecordOrder[52][3]}]]'),
+                  Number('[[${monthlyRecordOrder[53][3]}]]'),Number('[[${monthlyRecordOrder[54][3]}]]'),
+                  Number('[[${monthlyRecordOrder[55][3]}]]'),Number('[[${monthlyRecordOrder[56][3]}]]'),
+                  Number('[[${monthlyRecordOrder[57][3]}]]'),Number('[[${monthlyRecordOrder[58][3]}]]'),
+                  Number('[[${monthlyRecordOrder[59][3]}]]'),Number('[[${monthlyRecordOrder[60][3]}]]'),
+                ],
+                backgroundColor: 'burlywood',
+                borderWidth: 0,
+              };
+
+              let type = 'bar';
+              let data = {
+                labels: ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'],
+                datasets: [
+                  repair,
+                  parts,
+                  kaizo,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: true,
+                plugins : {
+                  datalabels: {
+                    display:'auto',
+                    color: 'white',
+                    font: {
+                      size: 10,
+                    },
+                    anchor: 'center',
+                    align: 'center',
+                    formatter: function (value, context) {
+                      var valueLabel = ''; // 表示するラベルの文字列
+                      if(value >= 100){
+                        valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                      }
+                      return valueLabel;
+                    },
+                  },
+                },
+                legend: {
+                  labels:{
+                    filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  },
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true,
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontSize: 12,
+                      fontColor: '#000000',
+                      suggestedMin : 0,
+                      suggestedMax : 1750,
+                      stepSize : 250,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    } ]
+                  },
+                };
+                let ctx = document.getElementById('chart2').getContext('2d');
+                let myChart = new Chart(ctx, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+      <!-- カテゴリ別・年次実績 -->
+      <div class="col-xl-4 p-1">
+        <div class="card border-0 rounded-3 m-1">
+          <h5>カテゴリ別・年次実績</h5>
+          <div class="card-body p-0">
+            <canvas id="chart3" width="320" height="350"></canvas>
+            <script>
+              (function() {
+              'use strict';
+              
+              let repair = {
+                label: '修理',
+                data: [
+                  Number('[[${annualRecordOrder[1][1]}]]'),Number('[[${annualRecordOrder[2][1]}]]'),
+                  Number('[[${annualRecordOrder[3][1]}]]'),Number('[[${annualRecordOrder[4][1]}]]'),
+                  Number('[[${annualRecordOrder[5][1]}]]'),
+                ],
+                backgroundColor: '#4682b4',
+                borderWidth: 0,
+              };
+              let parts = {
+                label: 'パーツ',
+                data: [
+                  Number('[[${annualRecordOrder[1][2]}]]'),Number('[[${annualRecordOrder[2][2]}]]'),
+                  Number('[[${annualRecordOrder[3][2]}]]'),Number('[[${annualRecordOrder[4][2]}]]'),
+                  Number('[[${annualRecordOrder[5][2]}]]'),
+                ],
+                backgroundColor: '#71bd71',
+                borderWidth: 0,
+              };
+              let kaizo = {
+                label: '改造',
+                data: [
+                  Number('[[${annualRecordOrder[1][3]}]]'),Number('[[${annualRecordOrder[2][3]}]]'),
+                  Number('[[${annualRecordOrder[3][3]}]]'),Number('[[${annualRecordOrder[4][3]}]]'),
+                  Number('[[${annualRecordOrder[5][3]}]]'),
+                ],
+                backgroundColor: 'burlywood',
+                borderWidth: 0,
+              };
+
+              let type = 'bar';
+              let data = {
+                labels: [
+                  '[[FY + ${annualRecordOrder[1][0]}]]','[[FY + ${annualRecordOrder[2][0]}]]',
+                  '[[FY + ${annualRecordOrder[3][0]}]]','[[FY + ${annualRecordOrder[4][0]}]]',
+                  '[[FY + ${annualRecordOrder[5][0]}]]',
+                ],
+                datasets: [
+                  repair,
+                  parts,
+                  kaizo,
+                ]
+              };
+              let options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                sumLabels: true,
+                plugins : {
+                  datalabels: {
+                    display:'auto',
+                    color: 'white',
+                    font: {
+                      size: 10,
+                    },
+                    anchor: 'center',
+                    align: 'center',
+                    formatter: function (value, context) {
+                      var valueLabel = ''; // 表示するラベルの文字列
+                      if(value >= 500){
+                        valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                      }
+                      return valueLabel;
+                    },
+                  },
+                },
+                legend: {
+                  labels:{
+                    filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                    boxWidth: 10,
+                    fontColor: '#000000',
+                  },
+                },
+                scales : {
+                  xAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontColor: '#000000', 
+                      autoSkip: true,
+                    }
+                  } ],
+                  yAxes : [ {
+                    gridLines: {                   // 補助線
+                      color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                      zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                    },
+                    stacked : true,
+                    ticks : {
+                      fontSize: 12,
+                      fontColor: '#000000',
+                      min : 0,
+                      suggestedMax : 2000,
+                      stepSize : 2000,
+                      callback : function(label, index, labels) {
+                        return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    } ]
+                  },
+                };
+                let ctx = document.getElementById('chart3').getContext('2d');
+                let myChart = new Chart(ctx, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- カテゴリ別・月次実績 -->
+    <div class="row">
+      <div class="col-xl-12 p-1">
+        <div class="card border-0 rounded-3 m-1" >
+          <h5>カテゴリ別・月次実績 (FY18-FY22)</h5>
+          <div class="card-body p-0">
+            <!-- 以下 HTML 部分 -->
+            <!-- スクロール可能グラフ領域のラッパーブロック -->
+            <div class="scrollableChartWrapper">
+              <!-- スクロールされる canvas を持つ div:
+                   - style.width を省略すると div の幅がページ幅に合わせられる;
+                   - style.width を指定すると div の幅（≒スクロールバーの長さ）が固定される -->
+              <div>
+                <!-- グラフ描画用 canvas:
+                     - style.height は必須;
+                     - style.width は全データを表示するのに必要なグラフ幅であり、JS によって設定する;
+                     - width,height は Chart により設定される -->
+                <canvas id="chart4" style="height: 350px;"></canvas>
+              </div>
+              <!-- Y軸イメージコピー用 canvas: {style.,}{height,width} は JS によって設定する -->
+              <canvas id="yAxis" width="0"></canvas>
+            </div>
+
+            <!-- 以下 JavaScript 部分 -->
+            <script>
+              (function() {
+
+                // Y軸コピー用 canvas
+                var cvsYAxis = document.getElementById('yAxis');
+                var ctxYAxis = cvsYAxis.getContext('2d');
+
+                let repair = {
+                  label: '修理',
+                  data: [
+                    Number('[[${monthlyRecordOrder[1][1]}]]'),Number('[[${monthlyRecordOrder[2][1]}]]'),
+                    Number('[[${monthlyRecordOrder[3][1]}]]'),Number('[[${monthlyRecordOrder[4][1]}]]'),
+                    Number('[[${monthlyRecordOrder[5][1]}]]'),Number('[[${monthlyRecordOrder[6][1]}]]'),
+                    Number('[[${monthlyRecordOrder[7][1]}]]'),Number('[[${monthlyRecordOrder[8][1]}]]'),
+                    Number('[[${monthlyRecordOrder[9][1]}]]'),Number('[[${monthlyRecordOrder[10][1]}]]'),
+                    Number('[[${monthlyRecordOrder[11][1]}]]'),Number('[[${monthlyRecordOrder[12][1]}]]'),
+                    Number('[[${monthlyRecordOrder[13][1]}]]'),Number('[[${monthlyRecordOrder[14][1]}]]'),
+                    Number('[[${monthlyRecordOrder[15][1]}]]'),Number('[[${monthlyRecordOrder[16][1]}]]'),
+                    Number('[[${monthlyRecordOrder[17][1]}]]'),Number('[[${monthlyRecordOrder[18][1]}]]'),
+                    Number('[[${monthlyRecordOrder[19][1]}]]'),Number('[[${monthlyRecordOrder[20][1]}]]'),
+                    Number('[[${monthlyRecordOrder[21][1]}]]'),Number('[[${monthlyRecordOrder[22][1]}]]'),
+                    Number('[[${monthlyRecordOrder[23][1]}]]'),Number('[[${monthlyRecordOrder[24][1]}]]'),
+                    Number('[[${monthlyRecordOrder[25][1]}]]'),Number('[[${monthlyRecordOrder[26][1]}]]'),
+                    Number('[[${monthlyRecordOrder[27][1]}]]'),Number('[[${monthlyRecordOrder[28][1]}]]'),
+                    Number('[[${monthlyRecordOrder[29][1]}]]'),Number('[[${monthlyRecordOrder[30][1]}]]'),
+                    Number('[[${monthlyRecordOrder[31][1]}]]'),Number('[[${monthlyRecordOrder[32][1]}]]'),
+                    Number('[[${monthlyRecordOrder[33][1]}]]'),Number('[[${monthlyRecordOrder[34][1]}]]'),
+                    Number('[[${monthlyRecordOrder[35][1]}]]'),Number('[[${monthlyRecordOrder[36][1]}]]'),
+                    Number('[[${monthlyRecordOrder[37][1]}]]'),Number('[[${monthlyRecordOrder[38][1]}]]'),
+                    Number('[[${monthlyRecordOrder[39][1]}]]'),Number('[[${monthlyRecordOrder[40][1]}]]'),
+                    Number('[[${monthlyRecordOrder[41][1]}]]'),Number('[[${monthlyRecordOrder[42][1]}]]'),
+                    Number('[[${monthlyRecordOrder[43][1]}]]'),Number('[[${monthlyRecordOrder[44][1]}]]'),
+                    Number('[[${monthlyRecordOrder[45][1]}]]'),Number('[[${monthlyRecordOrder[46][1]}]]'),
+                    Number('[[${monthlyRecordOrder[47][1]}]]'),Number('[[${monthlyRecordOrder[48][1]}]]'),
+                    Number('[[${monthlyRecordOrder[49][1]}]]'),Number('[[${monthlyRecordOrder[50][1]}]]'),
+                    Number('[[${monthlyRecordOrder[51][1]}]]'),Number('[[${monthlyRecordOrder[52][1]}]]'),
+                    Number('[[${monthlyRecordOrder[53][1]}]]'),Number('[[${monthlyRecordOrder[54][1]}]]'),
+                    Number('[[${monthlyRecordOrder[55][1]}]]'),Number('[[${monthlyRecordOrder[56][1]}]]'),
+                    Number('[[${monthlyRecordOrder[57][1]}]]'),Number('[[${monthlyRecordOrder[58][1]}]]'),
+                    Number('[[${monthlyRecordOrder[59][1]}]]'),Number('[[${monthlyRecordOrder[60][1]}]]'),
+                  ],
+                  backgroundColor: '#4682b4',
+                  borderWidth: 0,
+                  yAxisID: 'y-axis-1',
+                };
+                let parts = {
+                  label: 'パーツ販売',
+                  data: [
+                    Number('[[${monthlyRecordOrder[1][2]}]]'),Number('[[${monthlyRecordOrder[2][2]}]]'),
+                    Number('[[${monthlyRecordOrder[3][2]}]]'),Number('[[${monthlyRecordOrder[4][2]}]]'),
+                    Number('[[${monthlyRecordOrder[5][2]}]]'),Number('[[${monthlyRecordOrder[6][2]}]]'),
+                    Number('[[${monthlyRecordOrder[7][2]}]]'),Number('[[${monthlyRecordOrder[8][2]}]]'),
+                    Number('[[${monthlyRecordOrder[9][2]}]]'),Number('[[${monthlyRecordOrder[10][2]}]]'),
+                    Number('[[${monthlyRecordOrder[11][2]}]]'),Number('[[${monthlyRecordOrder[12][2]}]]'),
+                    Number('[[${monthlyRecordOrder[13][2]}]]'),Number('[[${monthlyRecordOrder[14][2]}]]'),
+                    Number('[[${monthlyRecordOrder[15][2]}]]'),Number('[[${monthlyRecordOrder[16][2]}]]'),
+                    Number('[[${monthlyRecordOrder[17][2]}]]'),Number('[[${monthlyRecordOrder[18][2]}]]'),
+                    Number('[[${monthlyRecordOrder[19][2]}]]'),Number('[[${monthlyRecordOrder[20][2]}]]'),
+                    Number('[[${monthlyRecordOrder[21][2]}]]'),Number('[[${monthlyRecordOrder[22][2]}]]'),
+                    Number('[[${monthlyRecordOrder[23][2]}]]'),Number('[[${monthlyRecordOrder[24][2]}]]'),
+                    Number('[[${monthlyRecordOrder[25][2]}]]'),Number('[[${monthlyRecordOrder[26][2]}]]'),
+                    Number('[[${monthlyRecordOrder[27][2]}]]'),Number('[[${monthlyRecordOrder[28][2]}]]'),
+                    Number('[[${monthlyRecordOrder[29][2]}]]'),Number('[[${monthlyRecordOrder[30][2]}]]'),
+                    Number('[[${monthlyRecordOrder[31][2]}]]'),Number('[[${monthlyRecordOrder[32][2]}]]'),
+                    Number('[[${monthlyRecordOrder[33][2]}]]'),Number('[[${monthlyRecordOrder[34][2]}]]'),
+                    Number('[[${monthlyRecordOrder[35][2]}]]'),Number('[[${monthlyRecordOrder[36][2]}]]'),
+                    Number('[[${monthlyRecordOrder[37][2]}]]'),Number('[[${monthlyRecordOrder[38][2]}]]'),
+                    Number('[[${monthlyRecordOrder[39][2]}]]'),Number('[[${monthlyRecordOrder[40][2]}]]'),
+                    Number('[[${monthlyRecordOrder[41][2]}]]'),Number('[[${monthlyRecordOrder[42][2]}]]'),
+                    Number('[[${monthlyRecordOrder[43][2]}]]'),Number('[[${monthlyRecordOrder[44][2]}]]'),
+                    Number('[[${monthlyRecordOrder[45][2]}]]'),Number('[[${monthlyRecordOrder[46][2]}]]'),
+                    Number('[[${monthlyRecordOrder[47][2]}]]'),Number('[[${monthlyRecordOrder[48][2]}]]'),
+                    Number('[[${monthlyRecordOrder[49][2]}]]'),Number('[[${monthlyRecordOrder[50][2]}]]'),
+                    Number('[[${monthlyRecordOrder[51][2]}]]'),Number('[[${monthlyRecordOrder[52][2]}]]'),
+                    Number('[[${monthlyRecordOrder[53][2]}]]'),Number('[[${monthlyRecordOrder[54][2]}]]'),
+                    Number('[[${monthlyRecordOrder[55][2]}]]'),Number('[[${monthlyRecordOrder[56][2]}]]'),
+                    Number('[[${monthlyRecordOrder[57][2]}]]'),Number('[[${monthlyRecordOrder[58][2]}]]'),
+                    Number('[[${monthlyRecordOrder[59][2]}]]'),Number('[[${monthlyRecordOrder[60][2]}]]'),
+                  ],
+                  backgroundColor: '#71bd71',
+                  borderWidth: 0,
+                  yAxisID: 'y-axis-1',
+                };
+
+                let kaizo = {
+                  label: '設備改造',
+                  data: [
+                    Number('[[${monthlyRecordOrder[1][3]}]]'),Number('[[${monthlyRecordOrder[2][3]}]]'),
+                    Number('[[${monthlyRecordOrder[3][3]}]]'),Number('[[${monthlyRecordOrder[4][3]}]]'),
+                    Number('[[${monthlyRecordOrder[5][3]}]]'),Number('[[${monthlyRecordOrder[6][3]}]]'),
+                    Number('[[${monthlyRecordOrder[7][3]}]]'),Number('[[${monthlyRecordOrder[8][3]}]]'),
+                    Number('[[${monthlyRecordOrder[9][3]}]]'),Number('[[${monthlyRecordOrder[10][3]}]]'),
+                    Number('[[${monthlyRecordOrder[11][3]}]]'),Number('[[${monthlyRecordOrder[12][3]}]]'),
+                    Number('[[${monthlyRecordOrder[13][3]}]]'),Number('[[${monthlyRecordOrder[14][3]}]]'),
+                    Number('[[${monthlyRecordOrder[15][3]}]]'),Number('[[${monthlyRecordOrder[16][3]}]]'),
+                    Number('[[${monthlyRecordOrder[17][3]}]]'),Number('[[${monthlyRecordOrder[18][3]}]]'),
+                    Number('[[${monthlyRecordOrder[19][3]}]]'),Number('[[${monthlyRecordOrder[20][3]}]]'),
+                    Number('[[${monthlyRecordOrder[21][3]}]]'),Number('[[${monthlyRecordOrder[22][3]}]]'),
+                    Number('[[${monthlyRecordOrder[23][3]}]]'),Number('[[${monthlyRecordOrder[24][3]}]]'),
+                    Number('[[${monthlyRecordOrder[25][3]}]]'),Number('[[${monthlyRecordOrder[26][3]}]]'),
+                    Number('[[${monthlyRecordOrder[27][3]}]]'),Number('[[${monthlyRecordOrder[28][3]}]]'),
+                    Number('[[${monthlyRecordOrder[29][3]}]]'),Number('[[${monthlyRecordOrder[30][3]}]]'),
+                    Number('[[${monthlyRecordOrder[31][3]}]]'),Number('[[${monthlyRecordOrder[32][3]}]]'),
+                    Number('[[${monthlyRecordOrder[33][3]}]]'),Number('[[${monthlyRecordOrder[34][3]}]]'),
+                    Number('[[${monthlyRecordOrder[35][3]}]]'),Number('[[${monthlyRecordOrder[36][3]}]]'),
+                    Number('[[${monthlyRecordOrder[37][3]}]]'),Number('[[${monthlyRecordOrder[38][3]}]]'),
+                    Number('[[${monthlyRecordOrder[39][3]}]]'),Number('[[${monthlyRecordOrder[40][3]}]]'),
+                    Number('[[${monthlyRecordOrder[41][3]}]]'),Number('[[${monthlyRecordOrder[42][3]}]]'),
+                    Number('[[${monthlyRecordOrder[43][3]}]]'),Number('[[${monthlyRecordOrder[44][3]}]]'),
+                    Number('[[${monthlyRecordOrder[45][3]}]]'),Number('[[${monthlyRecordOrder[46][3]}]]'),
+                    Number('[[${monthlyRecordOrder[47][3]}]]'),Number('[[${monthlyRecordOrder[48][3]}]]'),
+                    Number('[[${monthlyRecordOrder[49][3]}]]'),Number('[[${monthlyRecordOrder[50][3]}]]'),
+                    Number('[[${monthlyRecordOrder[51][3]}]]'),Number('[[${monthlyRecordOrder[52][3]}]]'),
+                    Number('[[${monthlyRecordOrder[53][3]}]]'),Number('[[${monthlyRecordOrder[54][3]}]]'),
+                    Number('[[${monthlyRecordOrder[55][3]}]]'),Number('[[${monthlyRecordOrder[56][3]}]]'),
+                    Number('[[${monthlyRecordOrder[57][3]}]]'),Number('[[${monthlyRecordOrder[58][3]}]]'),
+                    Number('[[${monthlyRecordOrder[59][3]}]]'),Number('[[${monthlyRecordOrder[60][3]}]]'),
+                  ],
+                  backgroundColor: 'burlywood',
+                  borderWidth: 0,
+                  yAxisID: 'y-axis-1',
+                };
+
+                let type = 'bar';
+                let data = {
+                  labels: [
+                    Number('[[${monthlyRecordOrder[1][0]}]]'),Number('[[${monthlyRecordOrder[2][0]}]]'),
+                    Number('[[${monthlyRecordOrder[3][0]}]]'),Number('[[${monthlyRecordOrder[4][0]}]]'),
+                    Number('[[${monthlyRecordOrder[5][0]}]]'),Number('[[${monthlyRecordOrder[6][0]}]]'),
+                    Number('[[${monthlyRecordOrder[7][0]}]]'),Number('[[${monthlyRecordOrder[8][0]}]]'),
+                    Number('[[${monthlyRecordOrder[9][0]}]]'),Number('[[${monthlyRecordOrder[10][0]}]]'),
+                    Number('[[${monthlyRecordOrder[11][0]}]]'),Number('[[${monthlyRecordOrder[12][0]}]]'),
+                    Number('[[${monthlyRecordOrder[13][0]}]]'),Number('[[${monthlyRecordOrder[14][0]}]]'),
+                    Number('[[${monthlyRecordOrder[15][0]}]]'),Number('[[${monthlyRecordOrder[16][0]}]]'),
+                    Number('[[${monthlyRecordOrder[17][0]}]]'),Number('[[${monthlyRecordOrder[18][0]}]]'),
+                    Number('[[${monthlyRecordOrder[19][0]}]]'),Number('[[${monthlyRecordOrder[20][0]}]]'),
+                    Number('[[${monthlyRecordOrder[21][0]}]]'),Number('[[${monthlyRecordOrder[22][0]}]]'),
+                    Number('[[${monthlyRecordOrder[23][0]}]]'),Number('[[${monthlyRecordOrder[24][0]}]]'),
+                    Number('[[${monthlyRecordOrder[25][0]}]]'),Number('[[${monthlyRecordOrder[26][0]}]]'),
+                    Number('[[${monthlyRecordOrder[27][0]}]]'),Number('[[${monthlyRecordOrder[28][0]}]]'),
+                    Number('[[${monthlyRecordOrder[29][0]}]]'),Number('[[${monthlyRecordOrder[30][0]}]]'),
+                    Number('[[${monthlyRecordOrder[31][0]}]]'),Number('[[${monthlyRecordOrder[32][0]}]]'),
+                    Number('[[${monthlyRecordOrder[33][0]}]]'),Number('[[${monthlyRecordOrder[34][0]}]]'),
+                    Number('[[${monthlyRecordOrder[35][0]}]]'),Number('[[${monthlyRecordOrder[36][0]}]]'),
+                    Number('[[${monthlyRecordOrder[37][0]}]]'),Number('[[${monthlyRecordOrder[38][0]}]]'),
+                    Number('[[${monthlyRecordOrder[39][0]}]]'),Number('[[${monthlyRecordOrder[40][0]}]]'),
+                    Number('[[${monthlyRecordOrder[41][0]}]]'),Number('[[${monthlyRecordOrder[42][0]}]]'),
+                    Number('[[${monthlyRecordOrder[43][0]}]]'),Number('[[${monthlyRecordOrder[44][0]}]]'),
+                    Number('[[${monthlyRecordOrder[45][0]}]]'),Number('[[${monthlyRecordOrder[46][0]}]]'),
+                    Number('[[${monthlyRecordOrder[47][0]}]]'),Number('[[${monthlyRecordOrder[48][0]}]]'),
+                    Number('[[${monthlyRecordOrder[49][0]}]]'),Number('[[${monthlyRecordOrder[50][0]}]]'),
+                    Number('[[${monthlyRecordOrder[51][0]}]]'),Number('[[${monthlyRecordOrder[52][0]}]]'),
+                    Number('[[${monthlyRecordOrder[53][0]}]]'),Number('[[${monthlyRecordOrder[54][0]}]]'),
+                    Number('[[${monthlyRecordOrder[55][0]}]]'),Number('[[${monthlyRecordOrder[56][0]}]]'),
+                    Number('[[${monthlyRecordOrder[57][0]}]]'),Number('[[${monthlyRecordOrder[58][0]}]]'),
+                    Number('[[${monthlyRecordOrder[59][0]}]]'),Number('[[${monthlyRecordOrder[60][0]}]]'),
+                  ],
+                  datasets: [
+                    repair,
+                    parts,
+                    kaizo,
+                  ]
+                };
+                let options = {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  sumLabels: true,
+                  plugins : {
+                    datalabels: {
+                      display:'auto',
+                      color: 'white',
+                      font: {
+                        size: 10,
+                      },
+                      anchor: 'center',
+                      align: 'center',
+                      formatter: function (value, context) {
+                        var valueLabel = ''; // 表示するラベルの文字列
+                        if(value >= 100){
+                          valueLabel = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); // データラベル文字などを付け足す
+                        }
+                        return valueLabel;
+                      },
+                    },
+                  },
+                  legend: {
+                    position: 'top',
+                    align: 'start',
+                    labels:{
+                      filter: function(items) {return items.text != 'dummy';}, // return items.datasetIndex != 2;
+                      boxWidth: 10,
+                      fontColor: '#000000',
+                    },
+                  },
+                  scales : {
+                    xAxes : [ {
+                      gridLines: {                   // 補助線
+                        color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                        zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                      },
+                      stacked : true,
+                      ticks : {
+                        fontColor: '#000000', 
+                        autoSkip: true,
+                      }
+                    } ],
+                    yAxes : [ {
+                      id: 'y-axis-1',
+                      position: 'left',
+                      gridLines: {                   // 補助線
+                        color: "rgba(0, 0, 0, 0.1)", // 補助線の色
+                        zeroLineColor: '#000000'         // y=0（Ｘ軸の色）
+                      },
+                      stacked : true,
+                      ticks : {
+                        fontSize: 12,
+                        fontColor: '#000000',
+                        min : 0,
+                        suggestedMax : 250,
+                        stepSize : 250,
+                        callback : function(label, index, labels) {
+                          return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '';}, //ここに単を入力
+                      },
+                    },]
+                  },
+                };
+
+                // X軸の1データ当たりの幅
+                var xAxisStepSize= 18;
+                // グラフ全体の幅を計算
+                var chartWidth = 120 * xAxisStepSize;
+
+                // グラフ描画用 canvas
+                var cvsChart = document.getElementById('chart4');
+                var ctxChart = cvsChart.getContext('2d');
+
+                // グラフ描画用canvasのstyle.width(すなわち全データを描画するのに必要なサイズ)に上記の幅を設定
+                cvsChart.style.width = chartWidth + "px";
+
+                // canvas.width(height)はグラフ描画時に Chart により変更される(らしい)ので、下記は不要
+                //cvsChart.width = chartWidth;
+                //cvsChart.height = chartHeight;
+
+                console.log("Before chart canvas width=" + cvsChart.style.width);
+                console.log("Before chart canvas height=" + cvsChart.style.height);
+
+                // グラフ描画
+                var myChart = new Chart(ctxChart, {
+                  options : options,
+                  type : type,
+                  data : data,
+                });
+              })();
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+  
+</body>
+</html>

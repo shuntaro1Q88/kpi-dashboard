@@ -1,0 +1,5 @@
+package com.shunproduct.kpidashboard.common;
+
+public class CSVDirectoryConst {
+
+}

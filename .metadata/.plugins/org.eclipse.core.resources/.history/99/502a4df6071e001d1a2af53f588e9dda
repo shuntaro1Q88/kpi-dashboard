@@ -1,0 +1,6 @@
+package com.shunproduct.kpidashboard.controller;
+
+@Controller
+public class ChartController {
+
+}

@@ -1,0 +1,36 @@
+package com.shunproduct.kpidashboard.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.shunproduct.kpidashboard.service.CSVTo2DArrayService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Controller
+public class ChartController {
+	
+	private final CSVTo2DArrayService csvTo2DArray;
+	
+	// 受注実績
+	@GetMapping("/order")
+	public String order(Model model,HttpServletRequest request) {
+
+		// 活動系
+		model.addAttribute("orderActionMo", csvTo2DArray.csvTo2DArray("order_action_mo.csv"));
+		model.addAttribute("orderActionHalfYr", csvTo2DArray.csvTo2DArray("order_action_half_yr.csv"));
+		model.addAttribute("orderActionFy", csvTo2DArray.csvTo2DArray("order_action_fy.csv"));
+
+		
+
+//	    System.out.println(request.getRemoteAddr());
+//		logger.info(request.getRemoteAddr());
+		
+		return "order";
+	}
+
+}

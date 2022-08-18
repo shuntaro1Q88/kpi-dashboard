@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;CSVDirectoryConst.java&apos; to &apos;com.shunproduct.kpidashboard.common.CSVDirectoryConst.java&apos;&#x0D;&#x0A;- 元のプロジェクト: &apos;kpi-dashboard&apos;&#x0D;&#x0A;- 宛先要素: &apos;com.shunproduct.kpidashboard.common.CSVDirectoryConst.java&apos;&#x0D;&#x0A;- オリジナル要素: &apos;com.shunproduct.kpidashboard.common.CSVDirectoryConst.java&apos;" description="コンパイル単位をコピー" destination="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.shunproduct.kpidashboard.common{CSVDirectoryConst.java" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.shunproduct.kpidashboard.common{CSVDirectoryConst.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1660722844582" units="1" version="1.0"/>
+</session>

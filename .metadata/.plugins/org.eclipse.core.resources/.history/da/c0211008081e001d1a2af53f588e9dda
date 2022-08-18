@@ -1,0 +1,9 @@
+package com.shunproduct.kpidashboard.controller;
+
+import org.springframework.stereotype.Controller;
+
+@RequiredArgsConstructor
+@Controller
+public class ChartController {
+
+}
